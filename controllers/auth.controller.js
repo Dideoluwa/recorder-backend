@@ -1,36 +1,32 @@
-const User = require("../models/user");
-const bcrypt = require("bcrypt");
-
-const saltRounds = 10;
+const { registrationSchema } = require("../validation/authValidation");
+const userServices = require("../services/user.services");
 
 const registerUser = async (req, res) => {
-  console.log("Registering Users....");
-  const userData = {
-    first_name: req.body.first_name,
-    last_name: req.body.last_name,
-    email: req.body.email,
-    password: req.body.password,
-  };
-  console.log(userData);
-
-  const hashedPassword = await bcrypt.hash(userData.password, saltRounds);
-
-  const user = new User({
-    first_name: userData.first_name,
-    last_name: userData.last_name,
-    email: userData.email,
-    password: hashedPassword,
-  });
-  await user.save();
-
-  console.log("User has been created");
-
-  res.status(200).send(
-    JSON.stringify({
-      user,
-      message: "User has been created",
-    })
-  );
+  try {
+    const userData = {
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      password: req.body.password,
+    };
+    console.log(userData);
+    await registrationSchema.validate(userData, { abortEarly: false });
+    const user = await userServices.createUser(userData);
+    res.status(200).send(
+      JSON.stringify({
+        success: true,
+        user,
+        message: "User registered successfully",
+      })
+    );
+  } catch (err) {
+    res.status(500).send(
+      JSON.stringify({
+        success: false,
+        message: err.message,
+      })
+    );
+  }
 };
 
 module.exports = { registerUser };

@@ -20,8 +20,10 @@ connectDatabase();
 app.use("/api/v1", userRouter);
 
 app.get("/", (req, res) => {
-  res.status(200).send("working");
-  console.log("App working");
+  res.status(200).send({
+    success: true,
+    message: "App is running",
+  });
 });
 
 app.listen(process.env.PORT || 8000, () => {
