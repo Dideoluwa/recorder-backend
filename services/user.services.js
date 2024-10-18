@@ -46,7 +46,13 @@ class UserService {
       }
     );
 
-    return { existingIdentifier, token };
+    return { token };
+  }
+
+  async findUserById(_id) {
+    return await UserDAO.findUserById({
+      _id,
+    });
   }
 }
 

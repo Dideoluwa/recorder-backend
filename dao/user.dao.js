@@ -21,6 +21,10 @@ class UserDAO {
       $or: [{ email: identifier }, { username: identifier }],
     });
   }
+
+  async findUserById({ _id }) {
+    return await User.findOne({ _id }).select("-password");
+  }
 }
 
 module.exports = new UserDAO();

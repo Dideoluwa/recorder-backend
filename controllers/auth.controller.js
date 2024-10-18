@@ -38,12 +38,12 @@ const loginUser = async (req, res) => {
     };
     await loginSchema.validate(userLoginData, { abortEarly: false });
 
-    const { existingIdentifier, token } =
-      await userServices.findUserByUsernameAndEmail(userLoginData);
+    const { token } = await userServices.findUserByUsernameAndEmail(
+      userLoginData
+    );
     res.status(200).send({
       success: true,
       accessToken: token,
-      userData: existingIdentifier,
     });
   } catch (err) {
     res.status(500).send({
@@ -53,4 +53,29 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const getUserDetails = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const user = await userServices.findUserById(userId);
+
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      user,
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+module.exports = { registerUser, loginUser, getUserDetails };
