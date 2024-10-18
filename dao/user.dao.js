@@ -1,23 +1,25 @@
-const bcrypt = require("bcrypt");
 const User = require("../models/user");
-
-const SALT_ROUNDS = 10;
 
 class UserDAO {
   async createUser(payload) {
-    const hashedPassword = await bcrypt.hash(payload.password, SALT_ROUNDS);
-
     const newUser = new User({
       first_name: payload.first_name,
       last_name: payload.last_name,
       email: payload.email,
-      password: hashedPassword,
+      username: payload.username,
+      password: payload.password,
     });
     return await newUser.save();
   }
 
   async findUserByEmail({ email }) {
     return await User.findOne({ email });
+  }
+
+  async findUserByUsernameAndEmail({ identifier }) {
+    return await User.findOne({
+      $or: [{ email: identifier }, { username: identifier }],
+    });
   }
 }
 

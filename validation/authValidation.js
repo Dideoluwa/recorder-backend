@@ -13,6 +13,12 @@ const registrationSchema = yup.object({
     .required("Password is required"),
 });
 
+const loginSchema = yup.object({
+  identifier: yup.string().required("Username or email is required"),
+  password: yup.string().required("Password is required"),
+});
+
 module.exports = {
   registrationSchema,
+  loginSchema,
 };
