@@ -9,7 +9,9 @@ class UserDAO {
       username: payload.username,
       password: payload.password,
     });
-    return await newUser.save();
+    await newUser.save();
+
+    return newUser;
   }
 
   async findUserByEmail({ email }) {
@@ -25,6 +27,8 @@ class UserDAO {
   async findUserById({ _id }) {
     return await User.findOne({ _id }).select("-password");
   }
+
+  async addVerificationToken({ token }) {}
 }
 
 module.exports = new UserDAO();

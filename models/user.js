@@ -28,6 +28,16 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, "Enter a password"],
   },
+  isVerified: { type: Boolean, default: false },
+  verificationToken: { type: String },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 const myDB = mongoose.connection.useDb("userData");

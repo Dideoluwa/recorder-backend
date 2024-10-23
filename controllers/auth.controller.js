@@ -14,13 +14,16 @@ const registerUser = async (req, res) => {
       password: await hashPassword(req.body.password),
       username: req.body.username,
     };
-    console.log(userData);
     await registrationSchema.validate(userData, { abortEarly: false });
     const user = await userServices.createUser(userData);
+
+    await userServices.sendEmailVerification(user);
+
     res.status(200).send({
       success: true,
       user,
-      message: "User registered successfully",
+      message:
+        "You have registered successfully! Please check your email to verify your account.",
     });
   } catch (err) {
     res.status(500).send({
@@ -78,4 +81,48 @@ const getUserDetails = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getUserDetails };
+const verifyUser = async (req, res) => {
+  try {
+    const { verificationId } = req.params;
+
+    await userServices.verifyUser(verificationId);
+
+    res.status(200).send({
+      success: true,
+      message: "Email verified successfully!",
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+const resendEmailVerification = async (req, res) => {
+  try {
+    const email = req.body.email;
+
+    const user = await userServices.findUserByEmail(email);
+
+    await userServices.sendEmailVerification(user);
+
+    res.status(200).send({
+      success: true,
+      message: "Verification has been sent to your email",
+    });
+  } catch (err) {
+    res.status(500).send({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getUserDetails,
+  verifyUser,
+  resendEmailVerification,
+};

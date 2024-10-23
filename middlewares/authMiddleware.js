@@ -26,4 +26,6 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
-module.exports = { authenticateToken };
+const verifyUser = (req, res, next) => {};
+
+module.exports = { authenticateToken, verifyUser };

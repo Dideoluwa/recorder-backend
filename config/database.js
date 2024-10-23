@@ -4,7 +4,7 @@ require("dotenv").config();
 const connectDatabase = () => {
   mongoose
     .connect(
-      `mongodb+srv://${process.env.MONGO_USER}:${process.env.DATABASE_PASSWORD}@recorder.sezbjvk.mongodb.net/?retryWrites=true&w=majority&appName=recorder`
+      `mongodb+srv://${process.env.MONGO_USER}:${process.env.DATABASE_PASSWORD}@recorder.sezbjvk.mongodb.net/?retryWrites=true&w=majority&appName=${process.env.APP_NAME}`
     )
     .then(() => {
       console.log("[200] SUCCESS: Database Connected");
